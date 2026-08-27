@@ -47,11 +47,9 @@ public class GunshipTurret : MonoBehaviour
     Auxiliary
     }
 
+    private bool canSwitch = true;
+
     public EstadoTorreta estadoActual;
-
-
-
-
 
 
     // Start is called before the first frame update
@@ -74,6 +72,18 @@ public class GunshipTurret : MonoBehaviour
         
 
         shoot(Time.deltaTime);
+
+        if(canSwitch){
+            if(Input.GetButton("Switch")){
+                print("¡SWITCHED!");
+                if(estadoActual == EstadoTorreta.Armed){
+                    estadoActual = EstadoTorreta.Auxiliary;
+                }
+                else{
+                    estadoActual = EstadoTorreta.Armed;
+                }
+            }
+        }
         
         
 
@@ -168,7 +178,7 @@ public class GunshipTurret : MonoBehaviour
                     newBullet = Instantiate(bulletPrefab,Vector3.zero, Quaternion.identity);
                     newBullet.transform.SetParent(BulletContainer.transform);
 
-                    print("Spawn point en: " + SpawnPoint.transform.position);
+                    //print("Spawn point en: " + SpawnPoint.transform.position);
                     newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
 
                 }
@@ -184,6 +194,8 @@ public class GunshipTurret : MonoBehaviour
                 Package newPackage = Instantiate(packagePrefab,SpawnPoint.transform.position, PlayerCamara.transform.rotation);
                 newPackage.transform.SetParent(PackageContainer.transform);
                 estadoActual = EstadoTorreta.Armed;
+                // Despues de lanzar un paquete ya no puedes lanzar mas hasta que Game Master te deje
+                canSwitch = false;
             }
 
         }
@@ -195,5 +207,11 @@ public class GunshipTurret : MonoBehaviour
     void RegresarBalaAlPool(bullet balaDormida){
         SleepingBulletPool.Enqueue(balaDormida);
         //print("Object Pool: " + SleepingBulletPool.Count);
+    }
+
+    //Llamado por Game master
+    public void reset(){
+        print("Can Switch");
+        canSwitch = true;
     }
 }

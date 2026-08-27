@@ -119,7 +119,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -148,6 +148,9 @@ MonoBehaviour:
   capaZombies:
     serializedVersion: 2
     m_Bits: 8
-  speed: 5
+  speed: 2.5
   targetChannel: {fileID: 11400000, guid: d0ccf15c06c904134884f17c60bfc338, type: 2}
   hp: 100
+  maxHp: 100
+  enemyPoolManager: {fileID: 6508888052668125568, guid: 1bf340203f94c41c180293f93555926f,
+    type: 3}

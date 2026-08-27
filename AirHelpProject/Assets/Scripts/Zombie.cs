@@ -27,29 +27,33 @@ public class Zombie : MonoBehaviour
 
     [Header("Enemy vars")]
     public float hp = 100.0f;
+    public float maxHp = 100.0f;
+    public float damage = 25.0f;
 
     [Header("Referencias Pool")]
     public EnemyPoolManager enemyPoolManager;
 
-    void Start()
+
+    void Awake()
     {
-        agente = GetComponent<UnityEngine.AI.NavMeshAgent>();
-
-        if(agente != null){
+        // Usamos Awake para garantizar que la referencia 'agente' nunca sea null al reactivar del Pool
+        agente = GetComponent<NavMeshAgent>();
+        if (agente != null)
+        {
             agente.speed = speed;
-
-            //Como vamos a usar Raynolds, que solo nos calcule el Path
-            agente.updatePosition = false; 
+            agente.updatePosition = false;
             agente.updateRotation = true;
-        }
-        else{
-            Debug.LogError("Componente Agente no encontrado en Zombie");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        //Si no estamos activos no ejecutamos nada
+        if (agente == null || !agente.enabled || !agente.isOnNavMesh) return;
+
+
         // 1. Obtener la velocidad base del NavMesh (Pathfinding)
         Vector3 velocidadNavMesh = agente.desiredVelocity;
 
@@ -132,17 +136,13 @@ public class Zombie : MonoBehaviour
 
 
     // === Funciones de Target === //
+
+    // == Regla 2: Mientras viva escucho nuevos targets ==
     void OnEnable(){
         if (targetChannel != null)
         {
             // Nos suscribimos al evento
             targetChannel.OnTargetChanged += OnNewTargetReceived;
-
-            // Si ya existía un objetivo activo al momento de nacer, nos asignamos a él
-            if (targetChannel.CurrentTarget != null)
-            {
-                OnNewTargetReceived(targetChannel.CurrentTarget);
-            }
         }
     }
 
@@ -157,43 +157,74 @@ public class Zombie : MonoBehaviour
     private void OnNewTargetReceived(Transform newTarget){
         if (newTarget != null){
             // Llamamos a nuestro método de movimiento del NavMesh
-            print("¡New target received");
+            //print("¡New target received");
             setObjective(newTarget.position);
+        } else{
+            StopMoving();
+        }
+    }
+
+    public void StopMoving()
+    {
+        if (agente != null && agente.enabled && agente.isOnNavMesh)
+        {
+            agente.ResetPath(); // Borra la ruta hacia la caja muerta
         }
     }
 
 
+
+
+     private void OnTriggerEnter(Collider other){
+        //print("¡Algo Detectado! " + other.gameObject.tag);
+
+        // Puedes comprobar una etiqueta (tag) específica
+        if (other.CompareTag("Package")){
+            //print("¡Piso Tocado!");
+            Package componentePackage = other.GetComponent<Package>();
+
+            if (componentePackage != null){
+            componentePackage.hurted(damage);
+                }
+            else{
+                Debug.LogError("Componente Script sin encontrar");
+            }
+
+            Despawn();
+        }
+        
+    }
+
+
+
     // ==== Pool Functions === //
 
-    [Header("Pool & Spawn Vars")]
-    public float maxHp = 100.0f;
 
-
-    public void Spawn(Vector3 spawnPosition){
+   // === REGLA 1: Nacer desde el Pool y tomar el objetivo activo de la BD ===
+    public void Spawn(Vector3 spawnPosition)
+    {
         // 1. Restaurar vida
         hp = maxHp;
 
-        // 2. Teleportar posición física
-        transform.position = spawnPosition;
-
-        // 3. Activar el GameObject
+        // 2. Activar GameObject PRIMERO
         gameObject.SetActive(true);
 
-        // 4. Sincronizar y reiniciar el NavMeshAgent
+        // 3. Posicionar y Sincronizar NavMeshAgent
         if (agente != null)
         {
             agente.enabled = true;
-            agente.Warp(spawnPosition); // Teleporta el agente sin romper la malla
-            agente.ResetPath();          // Limpia la ruta anterior
-            agente.nextPosition = spawnPosition;
+            transform.position = spawnPosition;
+            agente.Warp(spawnPosition); // Coloca al agente en la malla en esa coordenada
+            agente.ResetPath();
         }
 
-        // 5. Asignar objetivo si el canal ya tiene uno activo al momento de renacer
+        // 4. Consultar objetivo activo en la BD
         if (targetChannel != null && targetChannel.CurrentTarget != null)
         {
             setObjective(targetChannel.CurrentTarget.position);
         }
     }
+
 
     // Método de desactivación para devolver al Pool
     public void Despawn()

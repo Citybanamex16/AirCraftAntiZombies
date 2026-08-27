@@ -8,6 +8,7 @@ public class bullet : MonoBehaviour
 
     public float speed = 120.0f;
     public float damage = 100.0f;
+    private float damageToPackage = 0.0f;
 
     // === Object Pooling Vars == //
     public event Action<bullet> onBulletDeactivated;
@@ -19,6 +20,8 @@ public class bullet : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        damageToPackage = damage * 0.20f;
     }
 
     // Update is called once per frame
@@ -40,7 +43,7 @@ public class bullet : MonoBehaviour
             deactivate();
         }
         else if(other.CompareTag("Zombie")){
-            print("Enemy detected");
+            //print("Enemy detected");
 
             //1. Conseguir el componente script
             Zombie componenteZombie = other.GetComponent<Zombie>();
@@ -56,8 +59,16 @@ public class bullet : MonoBehaviour
 
             deactivate();
         }
-        else{
-            Debug.LogError("Colisionado con: " + other + " Con tag de: " + other.gameObject.tag);
+        else if (other.CompareTag("Package")){
+            Package componentePackage = other.GetComponent<Package>();
+
+            if (componentePackage != null){
+            componentePackage.hurted(damageToPackage);
+                }
+            else{
+                Debug.LogError("Componente Script sin encontrar");
+            }
+            deactivate();
         }
     }
 
@@ -68,7 +79,7 @@ public class bullet : MonoBehaviour
     public void activate(Vector3 spawnPosition, Quaternion spawnRotation){
         //Setteamos Pos
         transform.position = spawnPosition;
-        print("Bullet spawning in: " + spawnPosition);
+        //print("Bullet spawning in: " + spawnPosition);
         transform.rotation = spawnRotation;
 
         // 2. Receteamos fuerzas de RgidBody (aunque usamos Kinetic pero bueno)

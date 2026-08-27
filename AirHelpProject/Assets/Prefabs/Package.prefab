@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4005710556873424790}
   m_Layer: 0
   m_Name: Package
-  m_TagString: Untagged
+  m_TagString: Package
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,7 +120,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetChannel: {fileID: 11400000, guid: d0ccf15c06c904134884f17c60bfc338, type: 2}
+  gameMaster: {fileID: 7443810950540493681, guid: 3b0b1149381aa4b0faac8fb2dff67d9f,
+    type: 3}
   speed: 20
+  fuerzaCaida: 5
 --- !u!54 &4005710556873424790
 Rigidbody:
   m_ObjectHideFlags: 0
