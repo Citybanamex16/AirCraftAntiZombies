@@ -292,14 +292,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPool: {fileID: 169024167}
-  gameManager: {fileID: 0}
   targetChannel: {fileID: 11400000, guid: d0ccf15c06c904134884f17c60bfc338, type: 2}
   spawnTime: 0.5
   isSpawning: 0
-  radioMinimo: 50
-  radioMaximo: 75
-  enemy_stock_max: 10
-  max_enemies_in_game: 5
+  enemy_stock_max: 100
+  max_enemies_in_game: 75
+  ringRadius: 200
+  clusterArcAngle: 20
+  minZombiesPerCluster: 15
+  maxZombiesPerCluster: 50
+  depthJitter: 3
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +650,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyPool
       objectReference: {fileID: 0}
+    - target: {fileID: 6508888052668125568, guid: 1bf340203f94c41c180293f93555926f,
+        type: 3}
+      propertyPath: EnemyPoolSize
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 7592994209947998485, guid: 1bf340203f94c41c180293f93555926f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -785,6 +792,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OrbitSpeed
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6143797127195470543, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: distanciaObjetivo
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}

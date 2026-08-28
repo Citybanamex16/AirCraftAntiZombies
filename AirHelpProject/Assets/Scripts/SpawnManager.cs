@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour
 {
     [Header("Referencias")]
     public EnemyPoolManager enemyPool;
-    public GameMaster gameManager;
+    private GameMaster gameManager;
 
     [Header("Canal de Eventos")]
     public TargetEventChannel targetChannel;
@@ -17,8 +17,7 @@ public class SpawnManager : MonoBehaviour
     private float currentTime = 0.0f;
     public bool isSpawning = false;
 
-    public float radioMinimo = 125.0f;
-    public float radioMaximo = 150.0f;
+    
 
     [Header("Objetivo Actual")]
     private Transform currentTarget;
@@ -30,6 +29,17 @@ public class SpawnManager : MonoBehaviour
     public int max_enemies_in_game = 10;
 
     private bool emptyStock = false;
+
+    [Header("Configuración de Manchas / Clusters")]
+    public float ringRadius = 200f; // Radio del anillo
+    public float clusterArcAngle = 35f; // Ventana de apertura de la mancha (en grados)
+    public int minZombiesPerCluster = 15; // Mínimo por mancha
+    public int maxZombiesPerCluster = 50; // Máximo por mancha
+    public float depthJitter = 4f; // Variación de profundidad para dar volumen
+
+    // Variables internas de control
+    private float currentClusterAngle;
+    private int zombiesRemainingInCluster = 0;
 
 
 
@@ -55,6 +65,17 @@ public class SpawnManager : MonoBehaviour
         {
             targetChannel.OnTargetChanged -= OnNewTargetReceived;
         }
+    }
+
+    void Start(){
+        gameManager = GameMaster.Instance;
+
+        if(gameManager != null){
+            print("Package: valid Game reference: " + gameManager);
+        }
+        else{
+            Debug.LogError("SpawnManager: error reference, No Game Master reference");
+        } 
     }
 
     void Update()
@@ -126,7 +147,7 @@ public class SpawnManager : MonoBehaviour
         }
 
         // 2. Pendiente: Algoritmo para calcular las coordenadas de origen en la isla
-        Vector3 spawnPosition = GetSpawnPosition();
+        Vector3 spawnPosition = GetClusterSpawnPosition(currentTarget.position);
 
         //3. Activar y Spawnear al Zombie
         zombieToSpawn.Spawn(spawnPosition);
@@ -140,26 +161,27 @@ public class SpawnManager : MonoBehaviour
 
     }
 
-
-    // Algoritmo de Coordenadas de Spawn
-    private Vector3 GetSpawnPosition()
-{
-    if (currentTarget == null) return transform.position;
-
-    // Distancias del anillo
-
-    // Dirección aleatoria en 2D (plano XZ)
-    Vector2 direccionRandom = Random.insideUnitCircle.normalized;
-    float distanciaRandom = Random.Range(radioMinimo, radioMaximo);
-
-    Vector3 puntoGenerado = currentTarget.position + new Vector3(direccionRandom.x, 0, direccionRandom.y) * distanciaRandom;
-
-    // Validar que el punto caiga dentro del NavMesh navegable
-    if (NavMesh.SamplePosition(puntoGenerado, out NavMeshHit hit, 5.0f, NavMesh.AllAreas))
+private Vector3 GetClusterSpawnPosition(Vector3 centerPosition){
+    // 1. Si la mancha actual se agotó, elegimos un nuevo ángulo base en el anillo
+    if (zombiesRemainingInCluster <= 0)
     {
-        return hit.position;
+        currentClusterAngle = Random.Range(0f, 360f);
+        zombiesRemainingInCluster = Random.Range(minZombiesPerCluster, maxZombiesPerCluster + 1);
     }
 
-    return currentTarget.position; // Fallback
-}
+    // 2. Aplicamos un pequeño Strafe/Desviación angular dentro del arco de la mancha
+    float offsetAngle = Random.Range(-clusterArcAngle / 2f, clusterArcAngle / 2f);
+    float finalAngle = (currentClusterAngle + offsetAngle) * Mathf.Deg2Rad;
+
+    // 3. Agregamos variación de profundidad (radio) para dar grosor a la horda
+    float finalRadius = ringRadius + Random.Range(-depthJitter, depthJitter);
+
+    // 4. Calculamos la posición final X, Z
+    float x = centerPosition.x + Mathf.Cos(finalAngle) * finalRadius;
+    float z = centerPosition.z + Mathf.Sin(finalAngle) * finalRadius;
+
+    zombiesRemainingInCluster--;
+
+    return new Vector3(x, centerPosition.y, z);
+    }
 }

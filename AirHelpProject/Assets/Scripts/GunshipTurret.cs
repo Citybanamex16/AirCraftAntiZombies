@@ -77,9 +77,11 @@ public class GunshipTurret : MonoBehaviour
             if(Input.GetButton("Switch")){
                 print("¡SWITCHED!");
                 if(estadoActual == EstadoTorreta.Armed){
+                    print("Gunship: Auxiliary!");
                     estadoActual = EstadoTorreta.Auxiliary;
                 }
                 else{
+                    print("Gunship: ¡ARMED!");
                     estadoActual = EstadoTorreta.Armed;
                 }
             }
@@ -211,7 +213,7 @@ public class GunshipTurret : MonoBehaviour
 
     //Llamado por Game master
     public void reset(){
-        print("Can Switch");
+        print("GunShip: Can Switch");
         canSwitch = true;
     }
 }

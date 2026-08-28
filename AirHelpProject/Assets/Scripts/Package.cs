@@ -28,15 +28,23 @@ public class Package : MonoBehaviour
     }
 
     void Start()
-    {
+    {   
+        gameMaster = GameMaster.Instance;
         // Aplicamos un impulso inicial combinando el avance de la nave con una fuerza hacia abajo
         Vector3 velocidadInicial = (transform.forward * speed) + (Vector3.down * fuerzaCaida);
         rb.velocity = velocidadInicial;
 
         hp = maxHp;
 
-        GameMaster.Instance.OnPackageSuccess += OnSucces;
-        gameMaster = GameMaster.Instance;
+        if(gameMaster != null){
+            print("Package: valid Game reference: " + gameMaster);
+            gameMaster.OnPackageSuccess += OnSucces;
+        }
+        else{
+            Debug.LogError("Package: error reference: No Game Master reference");
+        }
+        
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -76,6 +84,7 @@ public class Package : MonoBehaviour
 
     void die(){
         if (targetChannel != null) targetChannel.RaiseEvent(null);
+        gameMaster.OnPackageSuccess -= OnSucces;
         Destroy(gameObject);
     }
 

@@ -25,7 +25,7 @@ public class GameMaster : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
-        
+
         // Busca automáticamente el SpawnManager en la escena
         if (spawnManager == null)
         {
@@ -62,9 +62,12 @@ public class GameMaster : MonoBehaviour
         if(lives <= 0){
             GameOver();
         }
+        else{
+            resetGameplay();
+        }
         
         
-        resetGameplay();
+        
         
 
         // Permitir procesar el siguiente paquete tras un breve lapso
@@ -97,8 +100,9 @@ public class GameMaster : MonoBehaviour
 
     //Called by SpawnManager when stock is out and no enemies in game
     public void OnPackageDefended(){
-        print("Game Master received Package Defended");
+        print("Game Master: received Package Defended");
         currentDefendedPackages += 1;
+        print("Game Master: Emitting signal OnPackageSuccess");
         OnPackageSuccess?.Invoke();
 
         if(currentDefendedPackages >= PackagesToDefend){
