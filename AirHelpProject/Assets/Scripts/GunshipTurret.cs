@@ -36,6 +36,28 @@ public class GunshipTurret : MonoBehaviour
     public float decreaseTempStep = 25.0f;
     private bool overload = false;
 
+    [Header("Gatling Thermal Bloom")]
+    public float minBloomAngle = 0.5f;   // Dispersión base (cañón frío)
+    public float maxBloomAngle = 6.0f;   // Dispersión máxima (cañón sobrecalentado)
+    public bool useInspectorCurve = false;
+    public AnimationCurve customBloomCurve; 
+    
+
+    [Header("Camara Shake")]
+    private Vector3 defaultCamaraPosition;
+
+    public float shakeDuration = 0.15f; // Duración corta para que responda rápido a cada disparo
+    private float shakeTimer = 0.0f;
+
+    public float baseShakeIntensity = 0.05f;  // Temblor mínimo (cañón frío)
+    public float maxShakeIntensity = 0.35f;   // Temblor máximo (cañón sobrecalentado)
+    public float recoverySpeed = 12.0f;        // Velocidad de retorno al centro
+
+    private bool isShaking = false;
+
+    private Vector2 lastBloomOffset;
+
+
 
 
     [Header("Zoom vars")]
@@ -83,6 +105,8 @@ public class GunshipTurret : MonoBehaviour
         miCamara = Camera.main;
         defaultZoom = miCamara.fieldOfView;
         currentZoom = defaultZoom;
+
+        defaultCamaraPosition = miCamara.transform.localPosition;
     }
 
     // Update is called once per frame
@@ -111,10 +135,73 @@ public class GunshipTurret : MonoBehaviour
         }
 
         zoom(Time.deltaTime);
+
+        CamaraShake(Time.deltaTime);
         
         
 
     }
+
+
+    //Llamado al dispar
+    public void TriggerShake(Quaternion currentBloomRotation){
+        isShaking = true;
+        shakeTimer = shakeDuration; // Reinicia el tiempo sin perder la posición original
+
+        // Extraemos los ángulos de desviación del Bloom para orientar el temblor
+        Vector3 euler = currentBloomRotation.eulerAngles;
+        
+        // == Mejora realizada con IA ==
+        // Normalizamos los ángulos de Euler (-180 a 180) para obtener la dirección exacta
+        float dirX = Mathf.DeltaAngle(0, euler.y); // Yaw -> Desplazamiento en X
+        float dirY = Mathf.DeltaAngle(0, euler.x); // Pitch -> Desplazamiento en Y
+
+        lastBloomOffset = new Vector2(dirX, dirY);
+
+        // == FIN de Mejora realizada con IA ==
+    }
+
+   private void CamaraShake(float delta){
+    if (miCamara == null) return;
+
+    if (isShaking)
+    {
+        shakeTimer -= delta;
+
+        if (shakeTimer <= 0)
+        {
+            shakeTimer = 0f;
+            isShaking = false;
+        }
+
+    // === Mejora generada con IA === //
+        float heatRatio = Mathf.Clamp01(currentTemp / maxTemp);
+        float bloomFactor = Mathf.Pow(heatRatio, 3);
+        float currentIntensity = Mathf.Lerp(baseShakeIntensity, maxShakeIntensity, bloomFactor);
+
+        // B) Sincronizar con el Bloom: Usamos la dirección del disparo + Ruido de alta frecuencia
+        float noiseX = (Mathf.PerlinNoise(Time.time * 30f, 0f) - 0.5f) * 2f;
+        float noiseY = (Mathf.PerlinNoise(0f, Time.time * 30f) - 0.5f) * 2f;
+
+        // Combinamos la dirección del Bloom con el temblor de la ametralladora
+        Vector3 targetOffset = new Vector3(
+            (lastBloomOffset.x * 0.1f + noiseX) * currentIntensity,
+            (lastBloomOffset.y * 0.1f + noiseY) * currentIntensity,
+            0f
+        );
+
+    // === Fin de Mejora generada con IA === //
+
+        //C) Aplicar el offset SIEMPRE desde la defaultCamaraPosition en un Lerp.
+        miCamara.transform.localPosition = Vector3.Lerp(miCamara.transform.localPosition, defaultCamaraPosition + targetOffset, delta * 25f);
+    }
+    else if (miCamara.transform.localPosition != defaultCamaraPosition)
+    {
+        // Regreso suave a la posición neutral original
+        miCamara.transform.localPosition = Vector3.Lerp(miCamara.transform.localPosition, defaultCamaraPosition, delta * recoverySpeed);
+    }
+}
+
 
     void initializeObjectPooling(){
         for(int i = 0; i< InitialPoolSize; i++){
@@ -196,9 +283,10 @@ public class GunshipTurret : MonoBehaviour
                 if(currentTime <= 0 && currentTemp < maxTemp && !overload){
                     num += 1;
                     bullet newBullet;
+                    Quaternion thermalBloom = GetThermalBloomRotation();
                     if(SleepingBulletPool.Count > 0){
                         newBullet = SleepingBulletPool.Dequeue();
-                        newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
+                        newBullet.activate(SpawnPoint.transform.position, thermalBloom);
 
                     } else{
                         //AutoEscalamiento
@@ -206,13 +294,14 @@ public class GunshipTurret : MonoBehaviour
                         newBullet.transform.SetParent(BulletContainer.transform);
 
                         //print("Spawn point en: " + SpawnPoint.transform.position);
-                        newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
+                        newBullet.activate(SpawnPoint.transform.position, thermalBloom);
 
                     }
 
                     //print("Object Pool: " + SleepingBulletPool.Count);
                     currentTime = fireRate;
                     currentTemp += tempPerBullet;
+                    TriggerShake(thermalBloom);
                     print("Current temp: " + currentTemp);
 
                     if(currentTemp >= maxTemp){
@@ -248,6 +337,36 @@ public class GunshipTurret : MonoBehaviour
 
         
     }
+
+
+    //Funcion refinada y generada con IA // 
+    public Quaternion GetThermalBloomRotation(){
+    // 1. Ratio de temperatura de 0 a 1
+    float heatRatio = Mathf.Clamp01(currentTemp / maxTemp);
+
+    // 2. Calcular la curva de dispersión
+    float bloomFactor;
+    
+    if (useInspectorCurve && customBloomCurve != null)
+    {
+        bloomFactor = customBloomCurve.Evaluate(heatRatio);
+    }
+    else
+    {
+        // Curva Cúbica: El bloom se mantiene bajo al inicio y explota al final
+        bloomFactor = Mathf.Pow(heatRatio, 3); 
+    }
+
+    // 3. Interpolar la dispersión angular
+    float currentBloom = Mathf.Lerp(minBloomAngle, maxBloomAngle, bloomFactor);
+
+    // 4. Cono circular 3D aleatorio
+    Vector2 randomCircle = Random.insideUnitCircle * currentBloom;
+    Quaternion bloomOffset = Quaternion.Euler(randomCircle.x, randomCircle.y, 0f);
+
+    return PlayerCamara.transform.rotation * bloomOffset;
+}
+
 
     void zoom(float delta){
         if(Input.GetButton("Zoom1")){

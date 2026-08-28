@@ -852,10 +852,25 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
+      propertyPath: maxBloomAngle
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: minBloomAngle
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
       propertyPath: packagePrefab
       value: 
       objectReference: {fileID: 3884040274780613043, guid: 708177450cf3f4c3cb8e08ce2c9c508b,
         type: 3}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: tempPerBullet
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
       propertyPath: BulletContainer
@@ -866,6 +881,16 @@ PrefabInstance:
       propertyPath: PackageContainer
       value: 
       objectReference: {fileID: 2014764935}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: decreaseTempStep
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: useInspectorCurve
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
