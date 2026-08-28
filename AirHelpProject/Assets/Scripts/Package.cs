@@ -7,7 +7,7 @@ public class Package : MonoBehaviour
 {
     [Header("Canal de Eventos")]
     public TargetEventChannel targetChannel;
-    public GameMaster gameMaster;
+    private GameMaster gameMaster;
 
     [Header("Físicas de Lanzamiento")]
     public float speed = 20.0f;
@@ -35,7 +35,8 @@ public class Package : MonoBehaviour
 
         hp = maxHp;
 
-        gameMaster.OnPackageSuccess += OnSucces;
+        GameMaster.Instance.OnPackageSuccess += OnSucces;
+        gameMaster = GameMaster.Instance;
     }
 
     private void OnCollisionEnter(Collision collision)

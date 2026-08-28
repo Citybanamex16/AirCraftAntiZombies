@@ -24,10 +24,10 @@ public class SpawnManager : MonoBehaviour
     private Transform currentTarget;
 
     [Header("Enemy Horde Vars")]
-    private int enemy_stock_max;
+    public int enemy_stock_max = 25;
     private int enemy_stock;
     private int enemies_in_game;
-    public int max_enemies_in_game = 5;
+    public int max_enemies_in_game = 10;
 
     private bool emptyStock = false;
 
@@ -74,7 +74,9 @@ public class SpawnManager : MonoBehaviour
 
         if(isSpawning){
             enemies_in_game = enemyPool.getActiveZombiesCount();
+            print("Enemies in game: " + enemies_in_game);
             if(emptyStock && enemies_in_game == 0){
+                isSpawning = false;
                 print("SpawnManager: Package Defended");
                 gameManager.OnPackageDefended();
             }
@@ -94,7 +96,7 @@ public class SpawnManager : MonoBehaviour
     // function called by Game Master
     public void reset(){
         isSpawning = false;
-        enemy_stock = max_enemies_in_game;
+        enemy_stock = enemy_stock_max;
         emptyStock = false;
         print("Enemy Spawner resetted and ready to got");
     }

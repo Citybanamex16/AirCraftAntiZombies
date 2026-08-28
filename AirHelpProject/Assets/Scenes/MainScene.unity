@@ -298,7 +298,8 @@ MonoBehaviour:
   isSpawning: 0
   radioMinimo: 50
   radioMaximo: 75
-  max_enemies_in_game: 40
+  enemy_stock_max: 10
+  max_enemies_in_game: 5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

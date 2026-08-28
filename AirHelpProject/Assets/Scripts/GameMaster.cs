@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
+
+    public static GameMaster Instance { get; private set; }
+
     public event Action OnPackageSuccess;
 
     [Header("Player Vars")]
@@ -20,6 +23,9 @@ public class GameMaster : MonoBehaviour
 
     void Awake()
     {
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
+        
         // Busca automáticamente el SpawnManager en la escena
         if (spawnManager == null)
         {

@@ -238,7 +238,7 @@ public class Zombie : MonoBehaviour
         //Caso A: Tenemos referencia
         if (enemyPoolManager != null)
         {
-            enemyPoolManager.ReturnZombieToPool(this);
+            EnemyPoolManager.Instance.ReturnZombieToPool(this);
         } //Caso B: No tenemos ref, la buscamos
         else if (EnemyPoolManager.Instance != null)
         { 

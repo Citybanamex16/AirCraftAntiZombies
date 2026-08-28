@@ -62,6 +62,8 @@ public class EnemyPoolManager : MonoBehaviour
         activeZombies.Remove(zombie);
         zombie.gameObject.SetActive(false);
         EnemyPoolQueue.Enqueue(zombie);
+        print("Zombie returned, size of hash: " + activeZombies.Count);
+
     }
 
     public int getActiveZombiesCount(){
