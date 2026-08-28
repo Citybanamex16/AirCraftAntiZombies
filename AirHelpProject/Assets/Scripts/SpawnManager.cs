@@ -16,7 +16,7 @@ public class SpawnManager : MonoBehaviour
     public float spawnTime = 0.5f;
     private float currentTime = 0.0f;
     public bool isSpawning = false;
-    
+
     
 
     [Header("Objetivo Actual")]
@@ -95,7 +95,7 @@ public class SpawnManager : MonoBehaviour
 
         if(isSpawning){
             enemies_in_game = enemyPool.getActiveZombiesCount();
-            print("Enemies in game: " + enemies_in_game);
+            //print("Enemies in game: " + enemies_in_game);
             if(emptyStock && enemies_in_game == 0){
                 isSpawning = false;
                 print("SpawnManager: Package Defended");

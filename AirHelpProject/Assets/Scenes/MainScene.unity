@@ -293,7 +293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPool: {fileID: 169024167}
   targetChannel: {fileID: 11400000, guid: d0ccf15c06c904134884f17c60bfc338, type: 2}
-  spawnTime: 0.5
+  spawnTime: 0.25
   isSpawning: 0
   enemy_stock_max: 100
   max_enemies_in_game: 75
@@ -301,7 +301,7 @@ MonoBehaviour:
   clusterArcAngle: 20
   minZombiesPerCluster: 15
   maxZombiesPerCluster: 50
-  depthJitter: 3
+  depthJitter: 4
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,6 +839,11 @@ PrefabInstance:
       propertyPath: miCamara
       value: 
       objectReference: {fileID: 1020897370}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: zoomStep
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
       propertyPath: bulletPrefab

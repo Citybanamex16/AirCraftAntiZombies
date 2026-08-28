@@ -29,6 +29,15 @@ public class GunshipTurret : MonoBehaviour
     public float fireRate = 0.30f;
     private float currentTime = 0.0f;
 
+    [Header("Gatling Temp")]
+    private float maxTemp = 100.0f;
+    private float currentTemp = 0.0f;
+    public float tempPerBullet = 1.0f;
+    public float decreaseTempStep = 25.0f;
+    private bool overload = false;
+
+
+
     [Header("Zoom vars")]
     public float zoomStep = 10.0f;
     private float currentZoom = 0.0f; //Se asigna en Start()
@@ -183,26 +192,45 @@ public class GunshipTurret : MonoBehaviour
                 currentTime -= delta;
             }
 
-            if(Input.GetButton("Fire1") && currentTime <= 0){
-                num += 1;
+            if(Input.GetButton("Fire1")){
+                if(currentTime <= 0 && currentTemp < maxTemp && !overload){
+                    num += 1;
+                    bullet newBullet;
+                    if(SleepingBulletPool.Count > 0){
+                        newBullet = SleepingBulletPool.Dequeue();
+                        newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
 
-                bullet newBullet;
-                if(SleepingBulletPool.Count > 0){
-                    newBullet = SleepingBulletPool.Dequeue();
-                    newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
+                    } else{
+                        //AutoEscalamiento
+                        newBullet = Instantiate(bulletPrefab,Vector3.zero, Quaternion.identity);
+                        newBullet.transform.SetParent(BulletContainer.transform);
 
-                } else{
-                    //AutoEscalamiento
-                    newBullet = Instantiate(bulletPrefab,Vector3.zero, Quaternion.identity);
-                    newBullet.transform.SetParent(BulletContainer.transform);
+                        //print("Spawn point en: " + SpawnPoint.transform.position);
+                        newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
 
-                    //print("Spawn point en: " + SpawnPoint.transform.position);
-                    newBullet.activate(SpawnPoint.transform.position, PlayerCamara.transform.rotation);
+                    }
 
+                    //print("Object Pool: " + SleepingBulletPool.Count);
+                    currentTime = fireRate;
+                    currentTemp += tempPerBullet;
+                    print("Current temp: " + currentTemp);
+
+                    if(currentTemp >= maxTemp){
+                        //Penalizacion
+                        currentTemp = maxTemp;
+                        print("¡Overload!");
+                        overload = true;
+                    }
                 }
-
-                //print("Object Pool: " + SleepingBulletPool.Count);
-                currentTime = fireRate;
+                
+            }
+            else if(currentTemp > 0){
+                currentTemp -= delta * decreaseTempStep;
+                if(currentTemp <= 0){
+                    overload = false;
+                    currentTemp = 0;
+                }
+                print(" decrasing Current temp: " + currentTemp);
             }
 
 
