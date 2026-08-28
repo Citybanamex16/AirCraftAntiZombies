@@ -29,6 +29,15 @@ public class GunshipTurret : MonoBehaviour
     public float fireRate = 0.30f;
     private float currentTime = 0.0f;
 
+    [Header("Zoom vars")]
+    public float zoomStep = 10.0f;
+    private float currentZoom = 0.0f; //Se asigna en Start()
+    private float defaultZoom = 0.0f; //Se asigna en Start()
+    public float maxZoom = 30.0f;
+
+    private Camera miCamara;
+
+
     [Header("Bullet Prefabs")]
     public bullet bulletPrefab;
     public Package packagePrefab;
@@ -60,6 +69,11 @@ public class GunshipTurret : MonoBehaviour
         initializeObjectPooling();
 
         estadoActual = EstadoTorreta.Auxiliary;
+
+        //Camera ref 
+        miCamara = Camera.main;
+        defaultZoom = miCamara.fieldOfView;
+        currentZoom = defaultZoom;
     }
 
     // Update is called once per frame
@@ -86,6 +100,8 @@ public class GunshipTurret : MonoBehaviour
                 }
             }
         }
+
+        zoom(Time.deltaTime);
         
         
 
@@ -200,6 +216,30 @@ public class GunshipTurret : MonoBehaviour
                 canSwitch = false;
             }
 
+        }
+
+        
+    }
+
+    void zoom(float delta){
+        if(Input.GetButton("Zoom1")){
+            //Aumentar zoom progresivamente hasta el tope (Disminuir field)
+            if(currentZoom > maxZoom){
+                currentZoom -= delta * zoomStep;
+
+                if (currentZoom < maxZoom) currentZoom = maxZoom; 
+                print("Zooming: " + currentZoom);
+                miCamara.fieldOfView = currentZoom;
+            }
+            
+        }
+        //Devolver el zoom al default si dejamos de apuntar
+        else if(currentZoom < defaultZoom){
+            currentZoom += (zoomStep * 2f) * delta; 
+
+            if (currentZoom > defaultZoom) currentZoom = defaultZoom;
+            //Asignar nuevo zoom
+            miCamara.fieldOfView = currentZoom;
         }
 
         

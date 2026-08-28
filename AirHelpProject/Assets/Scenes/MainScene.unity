@@ -469,6 +469,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1020897370 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 5564574427825216661, guid: 817d569fb11f14df689a67d6a0e85147,
+    type: 3}
+  m_PrefabInstance: {fileID: 3498095807781907415}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1072767601 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
@@ -828,6 +834,11 @@ PrefabInstance:
       propertyPath: fireRate
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: miCamara
+      value: 
+      objectReference: {fileID: 1020897370}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
       propertyPath: bulletPrefab

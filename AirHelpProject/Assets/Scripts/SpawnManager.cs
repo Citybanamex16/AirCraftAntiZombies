@@ -16,7 +16,7 @@ public class SpawnManager : MonoBehaviour
     public float spawnTime = 0.5f;
     private float currentTime = 0.0f;
     public bool isSpawning = false;
-
+    
     
 
     [Header("Objetivo Actual")]
