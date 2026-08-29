@@ -37,8 +37,8 @@ public class GunshipTurret : MonoBehaviour
     private bool overload = false;
 
     [Header("Gatling Thermal Bloom")]
-    public float minBloomAngle = 0.5f;   // Dispersión base (cañón frío)
-    public float maxBloomAngle = 6.0f;   // Dispersión máxima (cañón sobrecalentado)
+    public float minBloomAngle = 0.25f;   // Dispersión base (cañón frío)
+    public float maxBloomAngle = 3.0f;   // Dispersión máxima (cañón sobrecalentado)
     public bool useInspectorCurve = false;
     public AnimationCurve customBloomCurve; 
     
@@ -56,9 +56,6 @@ public class GunshipTurret : MonoBehaviour
     private bool isShaking = false;
 
     private Vector2 lastBloomOffset;
-
-
-
 
     [Header("Zoom vars")]
     public float zoomStep = 10.0f;
@@ -301,8 +298,8 @@ public class GunshipTurret : MonoBehaviour
                     //print("Object Pool: " + SleepingBulletPool.Count);
                     currentTime = fireRate;
                     currentTemp += tempPerBullet;
-                    TriggerShake(thermalBloom);
-                    print("Current temp: " + currentTemp);
+                    //TriggerShake(thermalBloom);
+                    //print("Current temp: " + currentTemp);
 
                     if(currentTemp >= maxTemp){
                         //Penalizacion
@@ -402,5 +399,20 @@ public class GunshipTurret : MonoBehaviour
     public void reset(){
         print("GunShip: Can Switch");
         canSwitch = true;
+    }
+
+
+    //Getters
+
+    public bool getOverload(){
+        return overload;
+    }
+
+    public float getMaxTemp(){
+        return maxTemp;
+    }
+
+    public float getTemp(){
+        return currentTemp;
     }
 }

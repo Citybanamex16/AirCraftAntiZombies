@@ -1,6 +1,7 @@
 // == Script base generado con IA == //
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class HUDMarkerManager : MonoBehaviour
 {
@@ -9,12 +10,21 @@ public class HUDMarkerManager : MonoBehaviour
     [Header("Referencias")]
     public Camera mainCamera;
     public RectTransform markerContainer;
+    public LayerMask groundLayer;
 
     [Header("Prefabs de Marcadores")]
     public UIWorldMarker zombieMarkerPrefab;  // Cuadro Rojo
     public UIWorldMarker packageMarkerPrefab; // Cuadro Verde
 
-    // Pool de marcadores para no instanciar masivamente en UI
+    [Header("Referencias de UI")]
+    public TextMeshProUGUI coordinatesText;
+    public TextMeshProUGUI rangeText;
+
+    
+    
+
+
+    // Pool de marcadores para no instanciar  
     private List<UIWorldMarker> markerPool = new List<UIWorldMarker>();
 
     void Awake()
@@ -71,4 +81,37 @@ public class HUDMarkerManager : MonoBehaviour
         markerPool.Add(newMarker);
         return newMarker;
     }
+
+
+    //Sistema de Telemetría en tiempo real // 
+
+    void Update()
+    {
+        if (mainCamera == null) return;
+
+        // 1. Simular coordenadas militares que reaccionan a la rotación de la cámara
+        float yaw = mainCamera.transform.eulerAngles.y;
+        float pitch = mainCamera.transform.eulerAngles.x;
+        if (pitch > 180f) pitch -= 360f; // Convertir de 0..360 a -180..180
+
+        if (coordinatesText != null)
+        {
+            coordinatesText.text = $"AZ: {yaw:000.0}°\nEL: {pitch:00.0}°";
+        }
+
+        // 2. Calcular la distancia real en metros al punto donde apunta la mirada (Raycast)
+        if (rangeText != null)
+        {
+            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, 2000f, groundLayer))
+            {
+                float distance = hit.distance;
+                rangeText.text = $"RNG: {distance:F0} M";
+            }
+            else
+            {
+                rangeText.text = "RNG: --- M";
+            }
+        }
+    }
+
 }

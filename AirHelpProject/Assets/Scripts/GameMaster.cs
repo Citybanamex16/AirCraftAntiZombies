@@ -19,6 +19,7 @@ public class GameMaster : MonoBehaviour
     [Header("References")]
     public SpawnManager spawnManager;
     public GunshipTurret gunshipTurret;
+    public PackageSectionScript packageGui;
 
 
     void Awake()
@@ -42,6 +43,8 @@ public class GameMaster : MonoBehaviour
     void Start()
     {
         lives = 3;
+        packageGui.updatePackageData(currentDefendedPackages,PackagesToDefend);
+
     }
 
     
@@ -100,10 +103,11 @@ public class GameMaster : MonoBehaviour
 
     //Called by SpawnManager when stock is out and no enemies in game
     public void OnPackageDefended(){
-        print("Game Master: received Package Defended");
+        //print("Game Master: received Package Defended");
         currentDefendedPackages += 1;
-        print("Game Master: Emitting signal OnPackageSuccess");
+        //print("Game Master: Emitting signal OnPackageSuccess");
         OnPackageSuccess?.Invoke();
+        packageGui.updatePackageData(currentDefendedPackages,PackagesToDefend);
 
         if(currentDefendedPackages >= PackagesToDefend){
             Win();
