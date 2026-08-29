@@ -45,6 +45,7 @@ public class Package : MonoBehaviour
         }
         
 
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -53,6 +54,7 @@ public class Package : MonoBehaviour
         if (!haImpactado && collision.gameObject.CompareTag("Ground"))
         {
             haImpactado = true;
+            HUDMarkerManager.Instance.TrackObject(this.transform, true);
 
             rb.velocity = Vector3.zero;
             rb.isKinematic = true; // Se congela firme en el suelo para los zombies

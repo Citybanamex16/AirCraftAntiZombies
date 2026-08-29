@@ -223,6 +223,9 @@ public class Zombie : MonoBehaviour
         {
             setObjective(targetChannel.CurrentTarget.position);
         }
+
+        //Nos suscribimos al HUD
+        HUDMarkerManager.Instance.TrackObject(this.transform, false);
     }
 
 
