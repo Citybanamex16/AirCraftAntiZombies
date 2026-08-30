@@ -123,6 +123,8 @@ MonoBehaviour:
   speed: 300
   damage: 100
   groundHitSound: {fileID: 8300000, guid: 6e64a2c7eb66d4265899df89b69cef26, type: 3}
+  groundHitParticlePrefab: {fileID: 474510852786676540, guid: 4d02d33ad00824fcb9f117844e601afb,
+    type: 3}
 --- !u!54 &30894275843688171
 Rigidbody:
   m_ObjectHideFlags: 0
