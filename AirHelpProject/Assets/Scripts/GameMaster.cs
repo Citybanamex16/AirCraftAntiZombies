@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public class GameMaster : MonoBehaviour
     public SpawnManager spawnManager;
     public GunshipTurret gunshipTurret;
     public PackageSectionScript packageGui;
+
+    [Header("Paneles de UI")]
+    public GameObject gameOverPanel;
+    public GameObject victoryPanel;
+
+    private bool isGameOver = false;
 
 
     void Awake()
@@ -41,8 +48,14 @@ public class GameMaster : MonoBehaviour
     }
 
     void Start()
-    {
-        lives = 3;
+    {   
+        // Setup de Menus y Pausa //
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (victoryPanel != null) victoryPanel.SetActive(false);
+        Time.timeScale = 1f;
+
+
+        packageGui.updateLives(lives);
         packageGui.updatePackageData(currentDefendedPackages,PackagesToDefend);
 
     }
@@ -50,7 +63,6 @@ public class GameMaster : MonoBehaviour
     
 
     private bool isProcessingLoss = false;
-
 
 
     // === Funciones === ///
@@ -61,6 +73,7 @@ public class GameMaster : MonoBehaviour
         isProcessingLoss = true;
 
         lives -= 1;
+        packageGui.updateLives(lives);
         print("Vida perdida, te quedan: " + lives);
         if(lives <= 0){
             GameOver();
@@ -117,11 +130,44 @@ public class GameMaster : MonoBehaviour
     }
 
     void GameOver(){
-        print("GAME OVER");
+        if (isGameOver) return;
+        isGameOver = true;
+
+        Debug.Log("¡Game Over!");
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Pausar la física y las animaciones del juego
+        //Time.timeScale = 0f;
     }
 
     void Win(){
-        print("¡You Won!");
+        if (isGameOver) return;
+        isGameOver = true;
+
+        Debug.Log("¡Victoria!");
+        if (victoryPanel != null) victoryPanel.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Pausar el juego al ganar
+        Time.timeScale = 0f;
+    }
+
+
+    //Funciones de Botones //
+
+    public void RestartLevel(){
+        print("Restarting level");
+        SceneManager.LoadScene(1);
+    }
+
+    public void GoToMainMenu(){
+        print("Going to main menu");
+        SceneManager.LoadScene(0);
     }
 
 }

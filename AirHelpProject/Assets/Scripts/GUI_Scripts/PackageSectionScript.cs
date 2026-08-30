@@ -6,9 +6,16 @@ using TMPro;
 public class PackageSectionScript : MonoBehaviour{
 [Header("References")]
 public TextMeshProUGUI packageText;
+public TextMeshProUGUI lives;
 
 public void updatePackageData(int currentValue,int maxValue){
     packageText.text = currentValue + "/" + maxValue;
+}
+
+
+public void updateLives(int currentLives){
+    lives.text = "" + currentLives;
+
 }
 
    

@@ -119,13 +119,13 @@ public class GunshipTurret : MonoBehaviour
 
         if(canSwitch){
             if(Input.GetButton("Switch")){
-                print("¡SWITCHED!");
+                //print("¡SWITCHED!");
                 if(estadoActual == EstadoTorreta.Armed){
-                    print("Gunship: Auxiliary!");
+                    //print("Gunship: Auxiliary!");
                     estadoActual = EstadoTorreta.Auxiliary;
                 }
                 else{
-                    print("Gunship: ¡ARMED!");
+                    //print("Gunship: ¡ARMED!");
                     estadoActual = EstadoTorreta.Armed;
                 }
             }
@@ -304,7 +304,7 @@ public class GunshipTurret : MonoBehaviour
                     if(currentTemp >= maxTemp){
                         //Penalizacion
                         currentTemp = maxTemp;
-                        print("¡Overload!");
+                        //print("¡Overload!");
                         overload = true;
                     }
                 }
@@ -316,7 +316,7 @@ public class GunshipTurret : MonoBehaviour
                     overload = false;
                     currentTemp = 0;
                 }
-                print(" decrasing Current temp: " + currentTemp);
+                //print(" decrasing Current temp: " + currentTemp);
             }
 
 
@@ -397,7 +397,8 @@ public class GunshipTurret : MonoBehaviour
 
     //Llamado por Game master
     public void reset(){
-        print("GunShip: Can Switch");
+        //print("GunShip: Can Switch");
+        estadoActual = EstadoTorreta.Auxiliary;
         canSwitch = true;
     }
 

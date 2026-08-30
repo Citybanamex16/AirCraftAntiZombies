@@ -105,7 +105,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 2
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -152,5 +152,6 @@ MonoBehaviour:
   targetChannel: {fileID: 11400000, guid: d0ccf15c06c904134884f17c60bfc338, type: 2}
   hp: 100
   maxHp: 100
+  damage: 25
   enemyPoolManager: {fileID: 6508888052668125568, guid: 1bf340203f94c41c180293f93555926f,
     type: 3}

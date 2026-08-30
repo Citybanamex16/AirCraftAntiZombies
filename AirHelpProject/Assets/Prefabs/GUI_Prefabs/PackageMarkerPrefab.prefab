@@ -91,4 +91,4 @@ MonoBehaviour:
   baseMaxDistance: 200
   defaultFOV: 60
   minBoxSize: {x: 15, y: 15}
-  padding: 25
+  padding: 30
