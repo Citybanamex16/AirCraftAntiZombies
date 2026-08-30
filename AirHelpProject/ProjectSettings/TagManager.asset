@@ -8,6 +8,8 @@ TagManager:
   - Zombie
   - AirCraft
   - Package
+  - FxTemporaire
+  - Bullet
   layers:
   - Default
   - TransparentFX

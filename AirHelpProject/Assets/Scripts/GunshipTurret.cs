@@ -85,9 +85,9 @@ public class GunshipTurret : MonoBehaviour
 
     [Header("Configuración de Audio SFX")]
     public AudioSource gatlingAudioSource; // AudioSource 2D en la cámara o torreta
-    public AudioClip gatlingLoopSound;     // 2. Gatling disparando (Loop)
-    public AudioClip gatlingWindDownSound; // 3. Gatling dejando de disparar
-    public AudioClip groundHitSound;       // 4. Hit de piso
+    public AudioClip gatlingLoopSound;     // Gatling disparando (Loop)
+    public AudioClip gatlingWindDownSound; // Gatling dejando de disparar
+ 
     private bool wasFiringLastFrame = false;
 
     [Header("Debug")]
@@ -214,17 +214,8 @@ public class GunshipTurret : MonoBehaviour
     }
 
 
-    //Método público para llamar el impacto en tierra 
-    public void PlayGroundHitSFX(Vector3 impactPoint)
-    {
-        if (groundHitSound == null) return;
 
-        // PlayClipAtPoint crea un AudioSource temporal en el punto 3D del mundo, 
-        // reproduce el sonido atenuado por la distancia a la cámara y se autodestruye.
-        AudioSource.PlayClipAtPoint(groundHitSound, impactPoint, 0.8f);
-    }
 
-    
 
     //Llamado al dispar
     public void TriggerShake(Quaternion currentBloomRotation){

@@ -6,9 +6,11 @@ using UnityEngine;
 public class bullet : MonoBehaviour
 {
 
+    [Header("bullet vars")]
     public float speed = 120.0f;
     public float damage = 100.0f;
     private float damageToPackage = 0.0f;
+    public AudioClip groundHitSound;
 
     // === Object Pooling Vars == //
     public event Action<bullet> onBulletDeactivated;
@@ -40,6 +42,11 @@ public class bullet : MonoBehaviour
         // Puedes comprobar una etiqueta (tag) específica
         if (other.CompareTag("Ground")){
             //print("¡Piso Tocado!");
+            // Crea un AudioSource 3D en el punto del impacto, reproduce el clip y se autodestruye solo
+            AudioSource.PlayClipAtPoint(groundHitSound, transform.position, 0.6f);
+
+
+
             deactivate();
         }
         else if(other.CompareTag("Zombie")){

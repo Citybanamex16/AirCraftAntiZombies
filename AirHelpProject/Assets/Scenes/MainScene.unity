@@ -5556,14 +5556,29 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
+      propertyPath: gatlingLoopSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 6c0a3adde002f4af7a445d0342a93a60, type: 3}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
       propertyPath: useInspectorCurve
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
+      propertyPath: gatlingAudioSource
+      value: 
+      objectReference: {fileID: 506097184}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
       propertyPath: minigunEntireAsset
       value: 
       objectReference: {fileID: 526931871}
+    - target: {fileID: 6292986287195209931, guid: 817d569fb11f14df689a67d6a0e85147,
+        type: 3}
+      propertyPath: gatlingWindDownSound
+      value: 
+      objectReference: {fileID: 8300000, guid: b7eac8d757f8340a58c84e874dfd5a38, type: 3}
     - target: {fileID: 8135674488461838442, guid: 817d569fb11f14df689a67d6a0e85147,
         type: 3}
       propertyPath: m_Antialiasing
