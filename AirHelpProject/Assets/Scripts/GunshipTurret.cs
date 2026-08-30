@@ -10,6 +10,7 @@ public class GunshipTurret : MonoBehaviour
     public GameObject SpawnPoint;
     public GameObject BulletContainer;
     public GameObject PackageContainer;
+    public GameObject destelloDisparo;
 
     [Header("Configuración de Sensibilidad")]
     public float sensibilidad = 100f;
@@ -74,6 +75,21 @@ public class GunshipTurret : MonoBehaviour
     public int InitialPoolSize = 50;
     private Queue<bullet> SleepingBulletPool = new Queue<bullet>();
 
+    [Header("Gatling Spin Effect")]
+    public Transform minigunEntireAsset; 
+    public float maxSpinSpeed = 1500f;   // Velocidad máxima de giro (grados/sec)
+    public float acceleration = 2500f;   // Qué tan rápido acelera
+    public float deceleration = 1800f;   // Qué tan rápido frena al soltar
+    private float currentSpinSpeed = 0f;
+    private bool isFiring = false;
+
+    [Header("Configuración de Audio SFX")]
+    public AudioSource gatlingAudioSource; // AudioSource 2D en la cámara o torreta
+    public AudioClip gatlingLoopSound;     // 2. Gatling disparando (Loop)
+    public AudioClip gatlingWindDownSound; // 3. Gatling dejando de disparar
+    public AudioClip groundHitSound;       // 4. Hit de piso
+    private bool wasFiringLastFrame = false;
+
     [Header("Debug")]
     public bool canMouse = true;
 
@@ -85,6 +101,7 @@ public class GunshipTurret : MonoBehaviour
     }
 
     private bool canSwitch = true;
+
 
     public EstadoTorreta estadoActual;
 
@@ -104,6 +121,13 @@ public class GunshipTurret : MonoBehaviour
         currentZoom = defaultZoom;
 
         defaultCamaraPosition = miCamara.transform.localPosition;
+
+          // Escribimos la ruta exacta bajando por cada hijo desde TorretaPlayer
+        string rutaParticula = "Main Camera/Minigun4/ShootSpawnPoint/WFX_MF FPS RIFLE";
+        
+        Transform particulaTransform = transform.Find(rutaParticula);
+
+        
     }
 
     // Update is called once per frame
@@ -134,11 +158,73 @@ public class GunshipTurret : MonoBehaviour
         zoom(Time.deltaTime);
 
         CamaraShake(Time.deltaTime);
+
+        //gatllingAnimation(Time.deltaTime);
+
+        gatlingAudio();
         
         
 
     }
 
+    private void gatllingAnimation(float delta){
+        if (minigunEntireAsset == null) return;
+
+        // 1. Acelerar si estamos disparando, o desacelerar si soltamos el gatillo
+        if (isFiring)
+        {
+            currentSpinSpeed = Mathf.MoveTowards(currentSpinSpeed, maxSpinSpeed, acceleration * delta);
+        }
+        else
+        {
+            currentSpinSpeed = Mathf.MoveTowards(currentSpinSpeed, 0f, deceleration * delta);
+        }
+
+        // 2. Aplicar la rotación continua sobre el eje frontal local
+        if (currentSpinSpeed > 0f)
+        {
+            // Cambia Vector3.forward por Vector3.up o Vector3.right si tu modelo viene rotado de fábrica
+            minigunEntireAsset.Rotate(Vector3.up * currentSpinSpeed * delta, Space.Self);        }
+
+    }
+
+
+    private void gatlingAudio(){
+        // 1. Inicio de ráfaga
+        if (isFiring && !wasFiringLastFrame)
+        {
+            gatlingAudioSource.clip = gatlingLoopSound;
+            gatlingAudioSource.loop = true;
+            gatlingAudioSource.Play();
+        }
+        // 2. Fin de ráfaga 
+        else if (!isFiring && wasFiringLastFrame)
+        {
+            gatlingAudioSource.Stop();
+            
+            // Reproducir el sonido de frenado una sola vez 
+            if (gatlingWindDownSound != null)
+            {
+                gatlingAudioSource.PlayOneShot(gatlingWindDownSound);
+            }
+        }
+
+        wasFiringLastFrame = isFiring;
+
+    }
+
+
+    //Método público para llamar el impacto en tierra 
+    public void PlayGroundHitSFX(Vector3 impactPoint)
+    {
+        if (groundHitSound == null) return;
+
+        // PlayClipAtPoint crea un AudioSource temporal en el punto 3D del mundo, 
+        // reproduce el sonido atenuado por la distancia a la cámara y se autodestruye.
+        AudioSource.PlayClipAtPoint(groundHitSound, impactPoint, 0.8f);
+    }
+
+    
 
     //Llamado al dispar
     public void TriggerShake(Quaternion currentBloomRotation){
@@ -295,7 +381,20 @@ public class GunshipTurret : MonoBehaviour
 
                     }
 
+                    //Activar particula si es que hay
+                    if (destelloDisparo != null)
+                    {
+                        // Buscamos las partículas dentro del objeto arrastrado
+                        ParticleSystem ps = destelloDisparo.GetComponent<ParticleSystem>();
+                        if (ps != null) ps.Play();
+                    }
+                    else{
+
+                        Debug.LogError("Muffle error: referencia incorrecta: " + destelloDisparo);
+                    }
+
                     //print("Object Pool: " + SleepingBulletPool.Count);
+                    isFiring = true;
                     currentTime = fireRate;
                     currentTemp += tempPerBullet;
                     //TriggerShake(thermalBloom);
@@ -317,6 +416,7 @@ public class GunshipTurret : MonoBehaviour
                     currentTemp = 0;
                 }
                 //print(" decrasing Current temp: " + currentTemp);
+                isFiring = false;
             }
 
 
