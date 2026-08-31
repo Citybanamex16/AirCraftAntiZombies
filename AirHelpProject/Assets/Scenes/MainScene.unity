@@ -972,8 +972,8 @@ MonoBehaviour:
   targetChannel: {fileID: 11400000, guid: d0ccf15c06c904134884f17c60bfc338, type: 2}
   spawnTime: 0.25
   isSpawning: 0
-  enemy_stock_max: 100
-  max_enemies_in_game: 50
+  enemy_stock_max: 200
+  max_enemies_in_game: 80
   ringRadius: 250
   clusterArcAngle: 20
   minZombiesPerCluster: 15
