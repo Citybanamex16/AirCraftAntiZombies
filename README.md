@@ -23,6 +23,10 @@ AirZ: Zombie Hunter es un juego desarrollado en Unity en el que el jugador defie
 | Aumentar zoom | Click derecho / botón Z |
 | Cambiar de modo | Barra espaciadora |
 
+## Gameplay
+
+![Gameplay AirZ: Zombie Hunter](./media/gameplay.gif)
+
 ## Objetivo del juego
 
 El jugador debe lanzar paquetes de ayuda desde el avión y, una vez en el suelo, defenderlos con su arma hasta eliminar a la horda zombie correspondiente. La partida se pierde si el jugador se queda sin vidas tras la destrucción de los paquetes, y se gana al eliminar exitosamente todas las hordas requeridas.
