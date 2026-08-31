@@ -49,7 +49,7 @@ public class bullet : MonoBehaviour
             // 1. Instanciar la partícula en la posición exacta del impacto
             if (groundHitParticlePrefab != null)
             {
-                Instantiate(groundHitParticlePrefab, transform.position, Quaternion.identity);
+                HitParticlePool.Instance.SpawnHitParticle(transform.position, Quaternion.identity);
             }
             // Crea un AudioSource 3D en el punto del impacto, reproduce el clip y se autodestruye solo
             AudioSource.PlayClipAtPoint(groundHitSound, transform.position, 0.9f);

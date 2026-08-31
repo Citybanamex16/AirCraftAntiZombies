@@ -14,7 +14,7 @@ public class GroundHit : MonoBehaviour
         // Si las partículas terminaron su ciclo, destruimos el GameObject
         if (ps != null && !ps.IsAlive())
         {
-            Destroy(gameObject);
+            HitParticlePool.Instance.ReturnToPool(gameObject);
         }
     }
 }

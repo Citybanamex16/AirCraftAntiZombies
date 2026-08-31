@@ -7,6 +7,10 @@ public class ObjectiveTerrain : MonoBehaviour
 
     private Terrain terrenoNativo;
 
+    [Header("static Decoration")]
+    public GameObject CenterBuilding;
+
+
     // Awake() es el equivalemte de enter_tree() de Godot
     void Awake()
     {
@@ -18,6 +22,13 @@ public class ObjectiveTerrain : MonoBehaviour
         {
             Debug.LogError("¡Objeto no Terrain Detectado! Devolviendo position como centro");
         }
+    }
+
+    void Start(){
+        if(CenterBuilding != null){
+            CenterBuilding.transform.position = get_center();
+        }
+        
     }
 
 

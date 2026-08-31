@@ -10,8 +10,8 @@ public class Package : MonoBehaviour
     private GameMaster gameMaster;
 
     [Header("Físicas de Lanzamiento")]
-    public float speed = 20.0f;
-    public float fuerzaCaida = 5.0f;
+    public float speed = 80.0f;
+    public float fuerzaCaida = 2.5f;
 
     [Header("Vars de Package")]
     public float maxHp = 200f;

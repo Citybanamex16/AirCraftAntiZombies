@@ -88,5 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a39e5f02961641cfb61f13732179012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxDistance: 75
+  baseMaxDistance: 125
   defaultFOV: 60
+  minBoxSize: {x: 15, y: 15}
+  padding: 10

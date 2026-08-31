@@ -11,6 +11,7 @@ public class GameMaster : MonoBehaviour
 
     public event Action OnPackageSuccess;
 
+
     [Header("Player Vars")]
     public int lives = 3;
     public int PackagesToDefend = 3;
@@ -21,10 +22,14 @@ public class GameMaster : MonoBehaviour
     public SpawnManager spawnManager;
     public GunshipTurret gunshipTurret;
     public PackageSectionScript packageGui;
+    
 
     [Header("Paneles de UI")]
     public GameObject gameOverPanel;
     public GameObject victoryPanel;
+
+    [Header("Lista de Cielos")]
+    public Material[] skyboxMaterials;
 
     private bool isGameOver = false;
 
@@ -58,6 +63,8 @@ public class GameMaster : MonoBehaviour
         packageGui.updateLives(lives);
         packageGui.updatePackageData(currentDefendedPackages,PackagesToDefend);
 
+
+        ApplyRandomSkybox();
     }
 
     
@@ -66,6 +73,24 @@ public class GameMaster : MonoBehaviour
 
 
     // === Funciones === ///
+
+
+    public void ApplyRandomSkybox()
+        {
+            if (skyboxMaterials == null || skyboxMaterials.Length == 0) return;
+
+            // 1. Elegir un índice al azar del array
+            //PD: se usa UnityEngine porque unity se confunde entre System y UnityEngine random.
+            int randomIndex = UnityEngine.Random.Range(0, skyboxMaterials.Length);
+            Material selectedSkybox = skyboxMaterials[randomIndex];
+
+            // 2. Asignar el nuevo Skybox a la escena
+            RenderSettings.skybox = selectedSkybox;
+
+            // 3. Forzar a Unity a actualizar la iluminación ambiental con el nuevo cielo
+            //Importante proque si no se ve raro.
+            DynamicGI.UpdateEnvironment();
+        } 
 
    public void OnPackageDestroyed(){
         // Previene que múltiples zombies ejecuten esta función más de una vez por paquete
